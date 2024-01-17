@@ -3,7 +3,7 @@ import pandas as pd
 
 from .utils import normalize_dataframe, forward_fill_pipeline
 
-data_dir = r'/home/zch/MrLiao/promptEHR/data/cdsl/'
+data_dir = r'./data/cdsl/'
 
 basic_records = ['PatientID', 'RecordTime', 'AdmissionTime', 'DischargeTime']
 target_features = ['Outcome', 'LOS']

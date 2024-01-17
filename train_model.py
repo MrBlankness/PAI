@@ -47,18 +47,13 @@ def get_loss(y_pred, y_true, task_name):
 
 def adjust_mask_ratio(mask, target_ratio):
     current_ratio = np.mean(mask)  # 计算当前矩阵中1的比例
-
     if current_ratio >= target_ratio:
         return mask  # 如果当前比例已经达到或超过目标比例，则不需要调整
-
     num_to_convert = int(np.sum(mask) * (target_ratio - current_ratio) / current_ratio)  # 需要转换的0的数量
-
     zero_indices = np.where(mask == 0)  # 找到矩阵中值为0的位置
     random_indices = np.random.choice(len(zero_indices[0]), num_to_convert, replace=False)  # 随机选择需要转换的位置
-
     # 将选定位置的0转换为1
     mask[zero_indices[0][random_indices], zero_indices[1][random_indices]] = 1
-
     return mask
 
 
@@ -68,9 +63,6 @@ def train_step(model, optimizer, train_loader, device, fill, trainable_features=
     # miss_values = []
     # miss_rate = []
     for step, (train_x_nor, train_x_nor_mask, train_y, train_lens, train_pid) in enumerate(train_loader):
-        # safari for cdsl
-        if train_x_nor.shape[1] != 76 and args.model == 'safari' and args.data == 'cdsl':
-            continue
         optimizer.zero_grad()
         train_x_nor = train_x_nor.to(device)
         train_x_nor_mask = train_x_nor_mask.to(device)
@@ -113,9 +105,6 @@ def val_step(model, val_loader, device, fill, trainable_features=None, task_name
         val_pred_list = []
         val_y_list = []
         for step, (val_x_nor, val_x_nor_mask, val_y, val_lens, val_pid) in enumerate(val_loader):
-            # safari for cdsl
-            if val_x_nor.shape[1] != 76 and args.model == 'safari' and args.data == 'cdsl':
-                continue
             val_x_nor = val_x_nor.to(device)
             val_x_nor_mask = val_x_nor_mask.to(device)
             val_y = val_y.to(device)
@@ -145,10 +134,7 @@ def val_step(model, val_loader, device, fill, trainable_features=None, task_name
         val_pred_list = torch.cat(val_pred_list)
         val_y_list = torch.cat(val_y_list)
         if task_name == 'outcome':
-            if args.init_features == 'random':
-                val_performance = get_binary_metrics(val_pred_list, val_y_list, bootstrap=True)
-            else:
-                val_performance = get_binary_metrics(val_pred_list, val_y_list, bootstrap=False)
+            val_performance = get_binary_metrics(val_pred_list, val_y_list)
         elif task_name == 'los':
             val_performance = get_regression_metrics(val_pred_list, val_y_list)
     # print(val_performance)
@@ -159,12 +145,9 @@ def val_step(model, val_loader, device, fill, trainable_features=None, task_name
 args = parse_args()
 set_seed(args.seed)
 
-if args.data == 'challenge':
-    from dataset.challengeDataset import *
-elif args.data == 'cdsl':
+
+if args.data == 'cdsl':
     from dataset.cdslDataset import *
-elif args.data == 'tjh':  # 刷不动了，不使用
-    from dataset.tjhDataset import *
 elif args.data == 'mimic':
     from dataset.mimicivDataset import *
 
@@ -181,7 +164,7 @@ test_loader = data.DataLoader(test_dataset, batch_size=args.batch, shuffle=False
 print(len(train_loader), len(val_loader), len(test_loader))
 
 device = torch.device("cuda:{}".format(args.device) if torch.cuda.is_available() == True else 'cpu')
-hidden_dim = {'mhagru': 32, 'adacare': 32, 'transformer': 32, 'concare': 32, 'rnn':32, 'gru': 32, 'lstm': 32, 'retain': 32, 'safari': 32, 'm3care': 32}
+hidden_dim = {'mhagru': 32, 'transformer': 32, 'concare': 32, 'rnn':32, 'gru': 32, 'lstm': 32, 'retain': 32, 'safari': 32, 'm3care': 32}
 model = DLModel(backbone_name=args.model, 
 				task_name=args.task, 
 				demo_dim=len(demographic_features), 
@@ -189,13 +172,6 @@ model = DLModel(backbone_name=args.model,
 				hidden_dim=hidden_dim[args.model],
 				output_dim=1,
                 num_layers=args.num_layers).to(device)
-
-# if args.freeze_layers != 0:
-#     if args.model == 'rnn':
-#         for name, param in model.named_parameters():
-#             for layer_idx in range(args.freeze_layers):
-#                 if 'weight_ih_l' + str(layer_idx) in name or 'weight_hh_l' + str(layer_idx) in name:
-#                     param.requires_grad = False
 
 if args.load_model:
     checkpoint = torch.load(args.load_model)
@@ -216,9 +192,6 @@ if args.fill:
         {'params': [trainable_features], 'lr': args.fill_lr}
     ]
     optimizer = torch.optim.AdamW(params)
-    # for name, param in model.named_parameters():
-    #     if 'backbone' in name:
-    #         param.requires_grad = False
 else:
     trainable_features = nn.Parameter(torch.tensor(default_fill[demographic_features + labtest_features].values, dtype=torch.float32), requires_grad=False).to(device)
     optimizer = torch.optim.AdamW(model.parameters(), lr=args.lr)
@@ -259,8 +232,8 @@ if not args.distrain:
             val_performance = val_step(model, val_loader, device, args.fill, trainable_features, task_name=args.task)
             test_performance = val_step(model, test_loader, device, args.fill, trainable_features, task_name=args.task)
         if epoch == 0:
-            best_performance = get_performance(test_performance if args.fill else val_performance, args.task)
-        if outperformance(test_performance if args.fill else val_performance, best_performance, args.task):
+            best_performance = get_performance(val_performance, args.task)
+        if outperformance(val_performance, best_performance, args.task):
             print('#' * 10, epoch, '#' * 10)
             print(val_performance)
             print(test_performance)
@@ -272,15 +245,9 @@ if not args.distrain:
             if args.fill:
                 state['trainable_features'] = trainable_features
             torch.save(state, save_checkpoint_path)
-            best_performance = get_performance(test_performance if args.fill else val_performance, args.task)
+            best_performance = get_performance(val_performance, args.task)
 
             best_epoch = epoch
-        # break
-
-
-if args.fill:
-    np.savez(os.path.join(args.save_features_path, '{}-{}-{}-{}-filling.npz'.format(args.data, args.model, args.task, args.init_features)), 
-             save_features=save_features, best_epoch=best_epoch)
 
 if args.distrain:
     save_checkpoint_path = args.load_model

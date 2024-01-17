@@ -4,7 +4,7 @@ import pandas as pd
 from .utils import normalize_dataframe, forward_fill_pipeline
 
 
-data_dir = r'/home/zch/MrLiao/promptEHR/data/mimic3_4_locf/mimic-iv'
+data_dir = r'./data/mimic3_4_locf/mimic-iv'
 basic_records = ['PatientID', 'RecordTime', 'AdmissionTime', 'DischargeTime']
 target_features = ['Outcome', 'LOS', 'Readmission']
 demographic_features = ['Sex', 'Age'] # Sex and ICUType are binary features, others are continuous features

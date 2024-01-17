@@ -12,7 +12,7 @@ class EhrDataset(data.Dataset):
         self.data_x_nor_mask = data_x_nor_mask
         self.task_name = task_name
 
-        print(len(self.data_x_nor), len(self.data_y), len(self.data_pid), len(self.data_x_nor_mask))
+        # print(len(self.data_x_nor), len(self.data_y), len(self.data_pid), len(self.data_x_nor_mask))
 
         if sample_ratio != 1:
             np.random.seed(2024)
@@ -28,7 +28,7 @@ class EhrDataset(data.Dataset):
             self.data_y = [self.data_y[i] for i in sampled_indices_0] + [self.data_y[i] for i in sampled_indices_1]
             self.data_pid = [self.data_pid[i] for i in sampled_indices_0] + [self.data_pid[i] for i in sampled_indices_1]
             self.data_x_nor_mask = [self.data_x_nor_mask[i] for i in sampled_indices_0] + [self.data_x_nor_mask[i] for i in sampled_indices_1]
-        print(len(self.data_x_nor), len(self.data_y), len(self.data_pid), len(self.data_x_nor_mask))
+        # print(len(self.data_x_nor), len(self.data_y), len(self.data_pid), len(self.data_x_nor_mask))
 
         if fill_methods != '':
             for idx, data_sample in enumerate(data_x_nor):

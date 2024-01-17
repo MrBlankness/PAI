@@ -36,7 +36,7 @@ def get_regression_metrics(preds, labels):
 
 threshold = 0.5
 
-def get_binary_metrics(preds, labels, bootstrap=False):
+def get_binary_metrics(preds, labels):
     accuracy = Accuracy(task="binary", threshold=threshold).to(labels.device)
     auroc = AUROC(task="binary").to(labels.device)
     auprc = AveragePrecision(task="binary").to(labels.device)
@@ -44,59 +44,20 @@ def get_binary_metrics(preds, labels, bootstrap=False):
     # convert labels type to int
     labels = labels.type(torch.int)
 
-    if not bootstrap:
-        accuracy(preds, labels)
-        auroc(preds, labels)
-        auprc(preds, labels)
-        f1(preds, labels)
-        minpse_score = minpse(preds, labels) 
+    accuracy(preds, labels)
+    auroc(preds, labels)
+    auprc(preds, labels)
+    f1(preds, labels)
+    minpse_score = minpse(preds, labels) 
 
-        # return a dictionary
-        return {
-            "accuracy": accuracy.compute().item(),
-            "auroc": auroc.compute().item(),
-            "auprc": auprc.compute().item(),
-            "minpse": minpse_score,
-            "f1": f1.compute().item(),
-        }
-    else:
-        accuracy_list = []
-        auroc_list = []
-        auprc_list = []
-        minpse_list = []
-        f1_list = []
-        for _ in range(10):
-            # 生成相同的随机索引
-            n = int(0.9 * preds.size(0))
-            random_indices = torch.randperm(preds.size(0))[:n]
-
-            # 根据随机的索引选择行
-            sampled_preds = preds[random_indices]
-            sampled_labels = labels[random_indices]
-
-            accuracy(sampled_preds, sampled_labels)
-            auroc(sampled_preds, sampled_labels)
-            auprc(sampled_preds, sampled_labels)
-            f1(sampled_preds, sampled_labels)
-            minpse_score = minpse(sampled_preds, sampled_labels) 
-
-            accuracy_list.append(accuracy.compute().item())
-            auroc_list.append(auroc.compute().item())
-            auprc_list.append(auprc.compute().item())
-            minpse_list.append(minpse_score)
-            f1_list.append(f1.compute().item())
-        return {
-            "accuracy": np.mean(accuracy_list),
-            "auroc": np.mean(auroc_list),
-            "auprc": np.mean(auprc_list),
-            "minpse": np.mean(minpse_list),
-            "f1": np.mean(f1_list),
-            "accuracy-std": np.std(accuracy_list),
-            "auroc-std": np.std(auroc_list),
-            "auprc-std": np.std(auprc_list),
-            "minpse-std": np.std(minpse_list),
-            "f1-std": np.std(f1_list)
-        }
+    # return a dictionary
+    return {
+        "accuracy": accuracy.compute().item(),
+        "auroc": auroc.compute().item(),
+        "auprc": auprc.compute().item(),
+        "minpse": minpse_score,
+        "f1": f1.compute().item(),
+    }
 
 
 
