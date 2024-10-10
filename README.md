@@ -85,7 +85,7 @@ You can choose to remove the `--fill` from the command to close PAI
 | SAFARI+PAI | **0.5191±0.0069** | **0.8726±0.0021** | **0.5390±0.0032** | **0.9061±0.0095** | **0.9847±0.0014** | **0.9454±0.0023** | **0.7210±0.0039** | **0.9464±0.0006** | **0.8049±0.0014** | **0.5481±0.0048** | **0.8611±0.0016** | **0.5873±0.0038** |
 
 
-## Result on LOS task on MIMIC-IV, CDSL and eICU datasets
+## Results of LOS task on MIMIC-IV, CDSL and eICU datasets
 
 | Datasets         |               | MIMIC-IV      |               |               | CDSL          |               |               | eICU          |               |
 |------------------|---------------|---------------|---------------|---------------|---------------|---------------|---------------|---------------|---------------|
@@ -120,7 +120,7 @@ You can choose to remove the `--fill` from the command to close PAI
 
 
 
-## Result on Readmission task on MIMIC-IV dataset
+## Results of Readmission task on MIMIC-IV dataset
 
 | Datasets         |               | MIMIC-IV      |               |
 |------------------|---------------|---------------|---------------|
@@ -153,7 +153,7 @@ You can choose to remove the `--fill` from the command to close PAI
 | SAFARI+Zero      | 0.4401±0.0067 | 0.7513±0.0018 | 0.4338±0.0037 |
 | SAFARI+PAI | **0.4515±0.0049** | **0.7677±0.0015** | **0.4693±0.0021** |
 
-## Result on Mortality and LOS task on MIMIC-III dataset
+## Results of Mortality and LOS task on MIMIC-III dataset
 
 
 | Task             |               | Mortality     |               |               | LOS           |               |
