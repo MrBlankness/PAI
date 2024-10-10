@@ -48,7 +48,7 @@ You can choose to remove the `--fill` from the command to close PAI
 - +LOCF refers to use the Last Observation Carried Forward (LOCF) algorithm to fill missing values in EHR data.
 - +Zero indicates the use of 0 as the imputation value in EHR data.
 - +PAI refers to use the PAI algorithm to fill missing values in EHR data.
-- **Average represents the average of 8 models on this task**
+- **Average represents the average reaults of 8 EHR analysis models on this task**
 - the * denotes the statistical significance by t-test
 
 ## Results of Mortality task on MIMIC-IV, CDSL, Sepsis and eICU datasets
