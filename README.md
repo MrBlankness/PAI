@@ -19,6 +19,14 @@ conda activate PAI
 pip install -r requirements.txt
 ```
 
+## Download Datasets
+
+- [x] [mimic-iii](https://physionet.org/content/mimiciii/1.4/)
+- [x] [mimic-iv](https://www.physionet.org/content/mimiciv/2.2/)
+- [x] [eICU](https://physionet.org/content/eicu-crd/2.0/)
+- [x] [sepsis](https://physionet.org/content/challenge-2019/1.0.0/)
+- [x] [cdsl](https://www.hmhospitales.com/prensa/notas-de-prensa/comunicado-covid-data-save-lives) 
+
 ## Running
 
 To run the code, simply execute the following command:
