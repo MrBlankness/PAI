@@ -4,6 +4,11 @@ Welcome to the official GitHub repository for PAI (Learnable Prompt as Pseudo-Im
 
 This is the official code for paper: **Learnable Prompt as Pseudo-Imputation: Rethinking the Necessity of Traditional EHR Data Imputation in Downstream Clinical Prediction**
 
+**📢 News: this work has been accepted at the AAAI 2025 !**
+
+**If you find our project interesting or helpful, we would appreciate it if you could give us a star! Your support is a tremendous encouragement to us!**
+
+
 ## Overview
 
 Analyzing the health status of patients based on Electronic Health Records (EHR) is a fundamental research problem in medical informatics. The presence of extensive missing values in EHR makes it challenging for deep neural networks (DNNs) to directly model the patient’s health status. Existing DNNs training protocols, including Impute-then-Regress Procedure and Jointly Optimizing of Impute-n-Regress Procedure, require the additional imputation models to reconstruction missing values. However, Impute-then-Regress Procedure introduces the risk of injecting imputed, non-real data into downstream clinical prediction tasks, resulting in power loss, biased estimation, and poorly performing models, while Jointly Optimizing of Impute-n-Regress Procedure is also difficult to generalize due to the complex optimization space and demanding data requirements. Inspired by the recent advanced literature of learnable prompt in the fields of NLP and CV, in this work, we rethought the necessity of the imputation model in downstream clinical tasks, and proposed Learnable Prompt as Pseudo-Imputation (PAI) as a new training protocol to assist EHR analysis. PAI no longer introduces any imputed data but constructs a learnable prompt to model the implicit preferences of the downstream model for missing values, resulting in a significant performance improvement for all state-of-the-arts EHR analysis models on four real-world datasets across two clinical prediction tasks. Further experimental analysis indicates that PAI exhibits higher robustness in situations of data insufficiency and high missing rates. More importantly, as a plug-and-play protocol, PAI can be easily integrated into any existing or even imperceptible future EHR analysis models.
@@ -51,6 +56,17 @@ The following table lists all the available arguments, their default values and 
 
 You can choose to remove the `--fill` from the command to close PAI
 
+## Publication
+
+```
+@inproceedings{Liao2025PAI,
+  title={Learnable Prompt as Pseudo-Imputation: Rethinking the Necessity of Traditional EHR Data Imputation in Downstream Clinical Prediction},
+  author={Liao, Weibin and Zhu, Yinghao and Zhang, Zhongji and Wang, Yuhang and Wang, Zixiang and Chu, Xu and Wang, Yasha and Ma, Liantao},
+  booktitle={Proceedings of the 31st ACM SIGKDD Conference on Knowledge Discovery and Data Mining V. 1},
+  pages={765--776},
+  year={2025}
+}
+```
 
 
 
