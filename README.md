@@ -4,7 +4,7 @@ Welcome to the official GitHub repository for PAI (Learnable Prompt as Pseudo-Im
 
 This is the official code for paper: **Learnable Prompt as Pseudo-Imputation: Rethinking the Necessity of Traditional EHR Data Imputation in Downstream Clinical Prediction**
 
-**📢 News: this work has been accepted at the AAAI 2025 !**
+**📢 News: this work has been accepted at the KDD 2025 !**
 
 **If you find our project interesting or helpful, we would appreciate it if you could give us a star! Your support is a tremendous encouragement to us!**
 
